@@ -1,0 +1,81 @@
+---
+title: "Home work 6"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r libraries, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(janitor)
+library(plotly)
+library(forcats)
+library(treemap)
+library(d3treeR)
+```
+
+```{r data_import_cleaning_problem2, include=FALSE}
+data_instacart = 
+  read_csv("../data/instacart_train_data.csv.zip") %>%
+  clean_names()
+
+# unique departments
+departmet_u = 
+  data_instacart %>%
+  select(department) %>%
+  distinct()
+  
+```
+
+
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+## Visualize product demand   
+```{r}
+data_instacart %>% 
+  group_by(department, aisle) %>%
+  summarize(n = n()) %>% 
+  treemap(index = c("department", "aisle"), vSize = n, type = "index") %>% 
+  d3tree(rootname = "General")
+```
+
+
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+## Barpot of top items in a department  
+```{r barplot}
+# numeric input = display top n
+# filter by department 
+# produce department has the most items
+data_instacart %>%
+  filter(department == "produce") %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(10) %>%
+  mutate(product_name = fct_reorder(product_name, n)) %>% 
+  plot_ly(x = ~product_name, y = ~n, color = ~product_name, 
+          type = "bar")
+```
+
+## Boxplot of order hour of the day for top items in a department 
+```{r boxplot}
+top_products =
+  data_instacart %>%
+  filter(department == "produce") %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(10) 
+  
+top_products = inner_join(top_products, data_instacart)  
+
+top_products %>%
+  mutate(product_name = fct_reorder(product_name, order_hour_of_day, IQR)) %>% 
+  plot_ly(x = ~product_name, y = ~ order_hour_of_day, color = ~product_name,
+          colors = "Set2",
+          type = "box")
+```
+
