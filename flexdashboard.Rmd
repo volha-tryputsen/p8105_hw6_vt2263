@@ -50,8 +50,8 @@ data_instacart %>%
   filter(department == "produce") %>%
   group_by(aisle) %>%
   summarize(n = n()) %>% 
-  treemap(index = c("aisle"), vSize = "n", type = "index") #%>% 
-  #d3tree(rootname = "General")
+  treemap(index = c("aisle"), vSize = "n", type = "index") %>% 
+  d3tree2(rootname = "General")
 ```
 
 ### Relationship between days since the last order and the order in which an order was added to the cart for top 5 items from Produce department  
@@ -67,9 +67,10 @@ p =
   inner_join(x = data_instacart, y = .) %>% 
   ggplot(aes(x = add_to_cart_order, y = days_since_prior_order, group = product_name, color = product_name)) +
   geom_smooth(se = FALSE) +
-  theme_classic()
+  theme_classic() + 
+  theme(legend.position = "bottom")
 
-  ggplotly(p)
+  ggplotly(p, tooltip = c("x","y","group"))
   
   #plot_ly(x = ~add_to_cart_order, y = ~days_since_prior_order,
           #color = ~order_hour_of_day, alpha = 0.5, 

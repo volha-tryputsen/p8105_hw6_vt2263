@@ -1,8 +1,9 @@
 ---
-title: "Home work 6:Instacart data:shiny dashbord"
+title: "Instacart dashbord"
 output: 
   flexdashboard::flex_dashboard:
     orientation: row
+    source_code: embed
   runtime: shiny  
 ---
 
@@ -14,9 +15,10 @@ library(janitor)
 library(plotly)
 library(forcats)
 library(treemap)
+library(shiny)
 ```
 
-```{r}
+```{r data_import}
 data_instacart = 
   read_csv("instacart_train_data.csv.zip") %>%
   clean_names()
@@ -31,6 +33,7 @@ departmet_u =
 
 Column {.sidebar}
 -----------------------------------------------------------------------
+This `flexdashboard` with Shiny was made to explore [Instacart Data](http://jeffgoldsmith.com/DSI/dataset_instacart.html)
 
 ```{r selectInput widget}
 departmet_u = 
@@ -42,9 +45,9 @@ departmet_u =
 # selectInput widget
 selectInput("dep_choice", label = h3("Select department"),
             choices = departmet_u, selected = "produce")
-```
 
-```{r}
+hr()
+
 max_top = 10
 min_top = 1
   
@@ -55,22 +58,23 @@ sliderInput("top_n", label = h4("Choose top n"),
 
 
 
-Column {data-width=650}
+Row
 -----------------------------------------------------------------------
 
-### Chart A
+### Product demand in each aisle of a department 
 
 ```{r}
-renderD3tree({
+renderD3tree2({
   data_instacart %>% 
   filter(department == input$dep_choice) %>%
   group_by(aisle) %>%
   summarize(n = n()) %>% 
-  treemap(index = c("aisle"), vSize = "n", type = "index")
+  treemap(index = c("aisle"), vSize = "n", type = "index") %>% 
+  d3tree2()
 })
 ```
 
-### Chart B
+### Relationship between days since the last order and the order in which an order was added to the cart for top selling items from a department
 
 ```{r}
 renderPlotly({
@@ -84,17 +88,16 @@ p =
   inner_join(x = data_instacart, y = .) %>% 
   ggplot(aes(x = add_to_cart_order, y = days_since_prior_order, group = product_name, color = product_name)) +
   geom_smooth(se = FALSE) +
-  theme_classic() +
-  theme(legend.position = "bottom")
+  theme_classic() 
 
   ggplotly(p)
 })
 ```
 
-Column {data-width=350}
+Row
 -----------------------------------------------------------------------
 
-### Chart C
+### Barpot of top sellingitems in a department
 
 ```{r}
 renderPlotly({
@@ -109,7 +112,7 @@ renderPlotly({
 })
 ```
 
-### Chart D
+### Boxplot of order hour of the day for top selling items in a department
 
 ```{r}
 renderPlotly({
