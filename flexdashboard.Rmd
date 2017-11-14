@@ -2,18 +2,20 @@
 title: "Home work 6"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+    orientation: rows
 ---
 
 ```{r libraries, include=FALSE}
+#library(devtools)
+#devtools::install_github("timelyportfolio/d3treeR", force = TRUE)
+#library(d3treeR)
 library(flexdashboard)
 library(tidyverse)
 library(janitor)
 library(plotly)
 library(forcats)
 library(treemap)
-library(d3treeR)
+library(viridis)
 ```
 
 ```{r data_import_cleaning_problem2, include=FALSE}
@@ -26,15 +28,24 @@ departmet_u =
   data_instacart %>%
   select(department) %>%
   distinct()
+
+top_products =
+  data_instacart %>%
+  filter(department == "produce") %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(10) 
   
+top_products = inner_join(top_products, data_instacart)  
 ```
 
 
 
-Column {data-width=500}
+Row 
 -----------------------------------------------------------------------
-## Visualize product demand   
-```{r}
+
+### Visualize product demand   
+```{r, eval=FALSE}
 data_instacart %>% 
   group_by(department, aisle) %>%
   summarize(n = n()) %>% 
@@ -42,11 +53,34 @@ data_instacart %>%
   d3tree(rootname = "General")
 ```
 
+```{r}
+p =
+  data_instacart %>% 
+  filter(!is.na(days_since_prior_order)) %>%
+  filter(department == "produce") %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(5) %>%
+  inner_join(x = data_instacart, y = .) %>% 
+  ggplot(aes(x = add_to_cart_order, y = days_since_prior_order, group = product_name, color = product_name)) +
+  geom_smooth(se = FALSE) +
+  #scale_color_viridis(discrete = TRUE) +
+  #coord_cartesian() +
+  theme_classic()
+
+  ggplotly(p)
+  
+  
+  #plot_ly(x = ~add_to_cart_order, y = ~days_since_prior_order,
+          #color = ~order_hour_of_day, alpha = 0.5, 
+          #type = "scatter", mode = "marker")
+```
 
 
-Column {data-width=500}
+Row
 -----------------------------------------------------------------------
-## Barpot of top items in a department  
+
+### Barpot of top items in a department  
 ```{r barplot}
 # numeric input = display top n
 # filter by department 
@@ -61,17 +95,10 @@ data_instacart %>%
           type = "bar")
 ```
 
-## Boxplot of order hour of the day for top items in a department 
-```{r boxplot}
-top_products =
-  data_instacart %>%
-  filter(department == "produce") %>%
-  count(product_name) %>% 
-  arrange(desc(n)) %>%
-  head(10) 
-  
-top_products = inner_join(top_products, data_instacart)  
 
+### Boxplot of order hour of the day for top items in a department  
+
+```{r boxplot}
 top_products %>%
   mutate(product_name = fct_reorder(product_name, order_hour_of_day, IQR)) %>% 
   plot_ly(x = ~product_name, y = ~ order_hour_of_day, color = ~product_name,
