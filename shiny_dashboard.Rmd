@@ -1,0 +1,132 @@
+---
+title: "Home work 6:Instacart data:shiny dashbord"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+  runtime: shiny  
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(d3treeR)
+library(tidyverse)
+library(janitor)
+library(plotly)
+library(forcats)
+library(treemap)
+```
+
+```{r}
+data_instacart = 
+  read_csv("instacart_train_data.csv.zip") %>%
+  clean_names()
+
+# unique departments
+departmet_u = 
+  data_instacart %>%
+  select(department) %>%
+  distinct()
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r selectInput widget}
+departmet_u = 
+  data_instacart %>%
+  select(department) %>%
+  distinct() %>%
+  pull()
+
+# selectInput widget
+selectInput("dep_choice", label = h3("Select department"),
+            choices = departmet_u, selected = "produce")
+```
+
+```{r}
+max_top = 10
+min_top = 1
+  
+# sliderInput widget
+sliderInput("top_n", label = h4("Choose top n"), 
+            min = min_top, max = max_top, value = 5)
+```
+
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+renderD3tree({
+  data_instacart %>% 
+  filter(department == input$dep_choice) %>%
+  group_by(aisle) %>%
+  summarize(n = n()) %>% 
+  treemap(index = c("aisle"), vSize = "n", type = "index")
+})
+```
+
+### Chart B
+
+```{r}
+renderPlotly({
+p =
+  data_instacart %>% 
+  filter(!is.na(days_since_prior_order)) %>%
+  filter(department == input$dep_choice) %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(input$top_n) %>%
+  inner_join(x = data_instacart, y = .) %>% 
+  ggplot(aes(x = add_to_cart_order, y = days_since_prior_order, group = product_name, color = product_name)) +
+  geom_smooth(se = FALSE) +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+  ggplotly(p)
+})
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart C
+
+```{r}
+renderPlotly({
+  data_instacart %>%
+  filter(department == input$dep_choice) %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(input$top_n) %>%
+  mutate(product_name = fct_reorder(product_name, n)) %>% 
+  plot_ly(x = ~product_name, y = ~n, color = ~product_name, 
+          type = "bar")
+})
+```
+
+### Chart D
+
+```{r}
+renderPlotly({
+  top_products =
+  data_instacart %>%
+  filter(department == input$dep_choice) %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(input$top_n) 
+  
+  top_products = inner_join(top_products, data_instacart)  
+  
+ top_products %>%
+  mutate(product_name = fct_reorder(product_name, order_hour_of_day, IQR)) %>% 
+  plot_ly(x = ~product_name, y = ~ order_hour_of_day, color = ~product_name,
+          colors = "Set2",
+          type = "box") 
+})
+```
+

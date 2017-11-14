@@ -1,5 +1,5 @@
 ---
-title: "Home work 6: Instacart data"
+title: "Home work 6:Instacart data:flexdashbord"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
