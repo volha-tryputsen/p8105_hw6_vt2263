@@ -19,7 +19,7 @@ library(treemap)
 
 ```{r data_import_cleaning_problem2, include=FALSE}
 data_instacart = 
-  read_csv("../data/instacart_train_data.csv.zip") %>%
+  read_csv("instacart_train_data.csv.zip") %>%
   clean_names()
 
 # unique departments
