@@ -8,6 +8,11 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+# to host a shiny app online
+#install.packages('rsconnect')
+#library(rsconnect)
+#rsconnect::deployApp('shiny_dashboard.Rmd')
+
 library(flexdashboard)
 library(d3treeR)
 library(tidyverse)
