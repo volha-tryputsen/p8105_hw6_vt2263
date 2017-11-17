@@ -4,7 +4,7 @@ navbar:
   title: "HW6: Instacart data"
   right:
     - text: "flexdashboard"
-      href: flex_dashboard_1.html 
+      href: flex_dashboard.html 
     - text: "shiny dashboard"
       href: https://volha-tryputsen.shinyapps.io/shiny_dashboard/
     - icon: fa-envelope fa-lg
