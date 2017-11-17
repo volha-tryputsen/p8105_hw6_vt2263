@@ -5,6 +5,6 @@ account: volha-tryputsen
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 235589
-bundleId: 1075754
+bundleId: 1081645
 url: https://volha-tryputsen.shinyapps.io/shiny_dashboard/
-when: 1510698280.50165
+when: 1510946841.50645
