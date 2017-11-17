@@ -1,10 +1,8 @@
 name: "Homework 6"
 output_dir: "."
 navbar:
-  title: "Instacart data"
+  title: "HW6: Instacart data"
   right:
-    - text: "Instacart"
-      href: index.html
     - text: "flexdashboard"
       href: flexdashboard.html 
     - text: "shiny dashboard"
@@ -14,4 +12,5 @@ navbar:
     - icon: fa-github fa-lg
       href: http://github.com/<volha-tryputsen>/
 output:
-  html_document
+  html_document:
+    theme: flatly
