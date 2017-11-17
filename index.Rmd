@@ -1,6 +1,11 @@
 ---
-title: "Interactive analysis of instacart data"
+title: "Interactive exploratory analysis of instacart data"
 ---
 
 ### [Istacart data](http://jeffgoldsmith.com/DSI/dataset_instacart.html)
+...insert text...
 
+#### Flexdashboard for _produce_ department
+Produce department had the most products purchased. I created a flexdashboard to conduct exploratory analyses of that department by evaluating the following:
+
+* 
