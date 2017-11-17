@@ -1,5 +1,5 @@
 ---
-title: "Instacart dashbord"
+title: "Instacart dashboard"
 output: 
   flexdashboard::flex_dashboard:
     orientation: row
@@ -79,7 +79,7 @@ renderD3tree2({
 })
 ```
 
-### Relationship between days since the last order and the order in which an order was added to the cart for top selling items from a department
+### Relationship between days since the last order and the order in which a product was added to cart for top selling items from a department
 
 ```{r}
 renderPlotly({
@@ -102,7 +102,7 @@ p =
 Row
 -----------------------------------------------------------------------
 
-### Barpot of top sellingitems in a department
+### Barplot of top selling products in a department
 
 ```{r}
 renderPlotly({

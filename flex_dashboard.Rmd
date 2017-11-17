@@ -1,5 +1,5 @@
 ---
-title: "Home work 6 Instacart data with flexdashbord"
+title: "Instacart flexdashboard"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -51,11 +51,10 @@ data_instacart %>%
   filter(department == "produce") %>%
   group_by(aisle) %>%
   summarize(n = n()) %>% 
-  treemap(index = c("aisle"), vSize = "n", type = "index") %>% 
-  d3tree2(rootname = "General")
+  treemap(index = c("aisle"), vSize = "n", type = "index") 
 ```
 
-### Relationship between days since the last order and the order in which an order was added to the cart for top 5 items from Produce department  
+### Relationship between days since the last order and the order in which a product was added to cart for top 5 items from Produce department  
 
 ```{r}
 p =
