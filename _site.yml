@@ -3,8 +3,12 @@ output_dir: "."
 navbar:
   title: "Instacart data"
   right:
-    - text: "about"
-      href: about.html  
+    - text: "Instacart"
+      href: index.html
+    - text: "flexdashboard"
+      href: flexdashboard.html 
+    - text: "shiny dashboard"
+      href: https://volha-tryputsen.shinyapps.io/shiny_dashboard/
     - icon: fa-envelope fa-lg
       href: mailto:<vt2263@cumc.columbia.edu>
     - icon: fa-github fa-lg
