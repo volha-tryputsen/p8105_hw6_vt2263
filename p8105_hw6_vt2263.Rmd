@@ -1,0 +1,25 @@
+---
+title: 'Homework 6'
+author: "Volha Tryputsen"
+date: "November 17, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## With Jeff`s permission I completed this homework by myself.  
+### Website
+The website I created is [here](https://volha-tryputsen.github.io/p8105_hw6_vt2263/)  
+
+### GitHub repository  
+My GitHub repo for this HW is [here](https://github.com/volha-tryputsen/p8105_hw6_vt2263)  
+
+### Flexdashboard
+I have had issues with the flexdashboard: the first time i knit it using appropriate .Rmd template it renders nicely. After the first time it renders as regular .Rmd file. Has tried to fis the issues and succeded by recreating a new flexdashboard from template, but on a second run and afterwords it renders as regular htl again. The raw R code could be found [here](https://raw.githubusercontent.com/volha-tryputsen/p8105_hw6_vt2263/master/flex_dashboard.Rmd)
+
+
+###Shiny dashboard
+My shiny dashboard is hosted from shinyapp.io and can be found [here](https://volha-tryputsen.shinyapps.io/shiny_dashboard/)
+
