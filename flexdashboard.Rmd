@@ -1,8 +1,9 @@
 ---
-title: "Home work 6:Instacart data:flexdashbord"
+title: "Home work 6 Instacart data with flexdashbord"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
+    vertical_layout: fill
 ---
 
 ```{r libraries, include=FALSE}
