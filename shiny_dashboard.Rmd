@@ -10,8 +10,8 @@ runtime: shiny
 ```{r setup, include=FALSE}
 # to host a shiny app online
 #install.packages('rsconnect')
-library(rsconnect)
-rsconnect::deployApp('shiny_dashboard.Rmd')
+# library(rsconnect)
+# rsconnect::deployApp('shiny_dashboard.Rmd')
 
 library(flexdashboard)
 library(d3treeR)
@@ -93,7 +93,9 @@ p =
   inner_join(x = data_instacart, y = .) %>% 
   ggplot(aes(x = add_to_cart_order, y = days_since_prior_order, group = product_name, color = product_name)) +
   geom_smooth(se = FALSE) +
-  theme_classic() 
+  theme_classic() +
+  labs(x = "order in which a product added to cart",
+       y = "days since the last order")
 
   ggplotly(p)
 })
@@ -113,7 +115,8 @@ renderPlotly({
   head(input$top_n) %>%
   mutate(product_name = fct_reorder(product_name, n)) %>% 
   plot_ly(x = ~product_name, y = ~n, color = ~product_name, 
-          type = "bar")
+          type = "bar") %>%
+  layout(xaxis = list(showticklabels = FALSE))
 })
 ```
 
@@ -134,7 +137,8 @@ renderPlotly({
   mutate(product_name = fct_reorder(product_name, order_hour_of_day, IQR)) %>% 
   plot_ly(x = ~product_name, y = ~ order_hour_of_day, color = ~product_name,
           colors = "Set2",
-          type = "box") 
+          type = "box") %>%
+    layout(xaxis = list(showticklabels = FALSE))
 })
 ```
 
