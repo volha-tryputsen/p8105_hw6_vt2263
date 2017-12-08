@@ -1,0 +1,110 @@
+---
+title: "Home work 6 Instacart data with flexdashbord"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r libraries, include=FALSE}
+#library(devtools)
+#devtools::install_github("timelyportfolio/d3treeR", force = TRUE)
+library(d3treeR)
+library(flexdashboard)
+library(tidyverse)
+library(janitor)
+library(plotly)
+library(forcats)
+library(treemap)
+```
+
+```{r data_import_cleaning_problem2, include=FALSE}
+data_instacart = 
+  read_csv("instacart_train_data.csv.zip") %>%
+  clean_names()
+
+# unique departments
+departmet_u = 
+  data_instacart %>%
+  select(department) %>%
+  distinct()
+
+top_products =
+  data_instacart %>%
+  filter(department == "produce") %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(10) 
+  
+top_products = inner_join(top_products, data_instacart)  
+```
+
+
+
+Row 
+-----------------------------------------------------------------------
+
+### Product demand in each aisle of Produce department 
+
+```{r}
+data_instacart %>% 
+  filter(department == "produce") %>%
+  group_by(aisle) %>%
+  summarize(n = n()) %>% 
+  treemap(index = c("aisle"), vSize = "n", type = "index") %>% 
+  d3tree2(rootname = "General")
+```
+
+### Relationship between days since the last order and the order in which an order was added to the cart for top 5 items from Produce department  
+
+```{r}
+p =
+  data_instacart %>% 
+  filter(!is.na(days_since_prior_order)) %>%
+  filter(department == "produce") %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(5) %>%
+  inner_join(x = data_instacart, y = .) %>% 
+  ggplot(aes(x = add_to_cart_order, y = days_since_prior_order, group = product_name, color = product_name)) +
+  geom_smooth(se = FALSE) +
+  theme_classic() + 
+  theme(legend.position = "bottom")
+
+  ggplotly(p, tooltip = c("x","y","group"))
+  
+  #plot_ly(x = ~add_to_cart_order, y = ~days_since_prior_order,
+          #color = ~order_hour_of_day, alpha = 0.5, 
+          #type = "scatter", mode = "marker")
+```
+
+
+Row
+-----------------------------------------------------------------------
+
+### Barpot of top 10 items in Produce department  
+```{r barplot}
+# numeric input = display top n
+# filter by department 
+# produce department has the most items
+data_instacart %>%
+  filter(department == "produce") %>%
+  count(product_name) %>% 
+  arrange(desc(n)) %>%
+  head(10) %>%
+  mutate(product_name = fct_reorder(product_name, n)) %>% 
+  plot_ly(x = ~product_name, y = ~n, color = ~product_name, 
+          type = "bar")
+```
+
+
+### Boxplot of order hour of the day for top 10 items in Produce department  
+
+```{r boxplot}
+top_products %>%
+  mutate(product_name = fct_reorder(product_name, order_hour_of_day, IQR)) %>% 
+  plot_ly(x = ~product_name, y = ~ order_hour_of_day, color = ~product_name,
+          colors = "Set2",
+          type = "box")
+```
+
